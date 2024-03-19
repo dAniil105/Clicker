@@ -1,0 +1,333 @@
+ЭТОТ КОД ДЛЯ GameMenu.cpp
+#include "GameMenu.h"
+
+using namespace sf;
+
+
+void game::GameMenu::setInitText(Text& text, String str, float xpos, float ypos)
+{
+	text.setFont(font);
+	text.setFillColor(menu_text_color);
+	text.setString(str);
+	text.setCharacterSize(size_font);
+	text.setPosition(xpos, ypos);
+	text.setOutlineThickness(3);
+	text.setOutlineColor(border_color);
+}
+
+void game::GameMenu::AlignMenu(int posx)
+{
+	
+
+	float nullx = 0;
+
+	for (int i = 0; i < max_menu; i++) 
+	{
+		switch (posx)
+		{
+		case 0:
+			nullx = 0;
+			break;
+		case 1:
+			nullx = mainMenu[i].getLocalBounds().width;
+			break;
+		case 2:
+			nullx = nullx = mainMenu[i].getLocalBounds().width / 2;
+			break;
+		}
+
+		mainMenu[i].setPosition(mainMenu[i].getPosition().x - nullx, mainMenu[i].getPosition().y);
+	}
+}
+
+game::GameMenu::GameMenu(RenderWindow& window, float menux, float menuy, String name[], int sizeFont, int step)
+	:mywindow(window), menu_X(menux), menu_Y(menuy), size_font(sizeFont), menu_Step(step)
+{
+	
+	//загрузка шрифта
+	if (!font.loadFromFile("D:/Clicker/SFML Clicker/arial.ttf")) exit(32);
+	max_menu = name->getSize() - 1;
+	mainMenu = new Text[name->getSize()];  //динамический массив пунктов меню
+
+	for (int i = 0, ypos = menu_Y; i < max_menu; i++, ypos += menu_Step) setInitText(mainMenu[i], name[i], menu_X, ypos);
+	mainMenuSelected = 0;
+	mainMenu[mainMenuSelected].setFillColor(Color::Yellow);
+}
+
+void game::GameMenu::MoveUp()
+{
+	mainMenuSelected--;
+
+	if (mainMenuSelected >= 0)
+	{
+		mainMenu[mainMenuSelected].setFillColor(chose_text_color);
+		mainMenu[mainMenuSelected + 1].setFillColor(menu_text_color);
+	}
+	else
+	{
+		mainMenu[0].setFillColor(menu_text_color);
+		mainMenuSelected = max_menu - 1;
+		mainMenu[mainMenuSelected].setFillColor(chose_text_color);
+	}
+}
+
+void game::GameMenu::MoveDown()
+{
+	mainMenuSelected++;
+
+	if (mainMenuSelected < max_menu)
+	{
+		mainMenu[mainMenuSelected - 1].setFillColor(menu_text_color);
+		mainMenu[mainMenuSelected].setFillColor(chose_text_color);
+	}
+	else
+	{
+		mainMenu[max_menu - 1].setFillColor(menu_text_color);
+		mainMenuSelected = 0;
+		mainMenu[mainMenuSelected].setFillColor(chose_text_color);
+	}
+}
+
+void game::GameMenu::draw()
+{
+	for (int i = 0; i < max_menu; i++) mywindow.draw(mainMenu[i]);
+}
+
+void game::GameMenu::setColorTextMenu(Color menColor, Color ChoColor, Color BordColor)
+{
+	menu_text_color = menColor;
+	chose_text_color = ChoColor;
+	border_color = BordColor;
+
+	for (int i = 0; i < max_menu; i++)
+	{
+		mainMenu[i].setFillColor(menu_text_color);
+		mainMenu[i].setOutlineColor(border_color);
+	}
+
+	mainMenu[mainMenuSelected].setFillColor(chose_text_color);
+}
+
+ЭТОТ КОД ДЛЯ GameMenu.h
+#include "GameMenu.h"
+
+using namespace sf;
+
+
+void game::GameMenu::setInitText(Text& text, String str, float xpos, float ypos)
+{
+	text.setFont(font);
+	text.setFillColor(menu_text_color);
+	text.setString(str);
+	text.setCharacterSize(size_font);
+	text.setPosition(xpos, ypos);
+	text.setOutlineThickness(3);
+	text.setOutlineColor(border_color);
+}
+
+void game::GameMenu::AlignMenu(int posx)
+{
+	
+
+	float nullx = 0;
+
+	for (int i = 0; i < max_menu; i++) 
+	{
+		switch (posx)
+		{
+		case 0:
+			nullx = 0;
+			break;
+		case 1:
+			nullx = mainMenu[i].getLocalBounds().width;
+			break;
+		case 2:
+			nullx = nullx = mainMenu[i].getLocalBounds().width / 2;
+			break;
+		}
+
+		mainMenu[i].setPosition(mainMenu[i].getPosition().x - nullx, mainMenu[i].getPosition().y);
+	}
+}
+
+game::GameMenu::GameMenu(RenderWindow& window, float menux, float menuy, String name[], int sizeFont, int step)
+	:mywindow(window), menu_X(menux), menu_Y(menuy), size_font(sizeFont), menu_Step(step)
+{
+	
+	//загрузка шрифта
+	if (!font.loadFromFile("D:/Clicker/SFML Clicker/arial.ttf")) exit(32);
+	max_menu = name->getSize() - 1;
+	mainMenu = new Text[name->getSize()];  //динамический массив пунктов меню
+
+	for (int i = 0, ypos = menu_Y; i < max_menu; i++, ypos += menu_Step) setInitText(mainMenu[i], name[i], menu_X, ypos);
+	mainMenuSelected = 0;
+	mainMenu[mainMenuSelected].setFillColor(Color::Yellow);
+}
+
+void game::GameMenu::MoveUp()
+{
+	mainMenuSelected--;
+
+	if (mainMenuSelected >= 0)
+	{
+		mainMenu[mainMenuSelected].setFillColor(chose_text_color);
+		mainMenu[mainMenuSelected + 1].setFillColor(menu_text_color);
+	}
+	else
+	{
+		mainMenu[0].setFillColor(menu_text_color);
+		mainMenuSelected = max_menu - 1;
+		mainMenu[mainMenuSelected].setFillColor(chose_text_color);
+	}
+}
+
+void game::GameMenu::MoveDown()
+{
+	mainMenuSelected++;
+
+	if (mainMenuSelected < max_menu)
+	{
+		mainMenu[mainMenuSelected - 1].setFillColor(menu_text_color);
+		mainMenu[mainMenuSelected].setFillColor(chose_text_color);
+	}
+	else
+	{
+		mainMenu[max_menu - 1].setFillColor(menu_text_color);
+		mainMenuSelected = 0;
+		mainMenu[mainMenuSelected].setFillColor(chose_text_color);
+	}
+}
+
+void game::GameMenu::draw()
+{
+	for (int i = 0; i < max_menu; i++) mywindow.draw(mainMenu[i]);
+}
+
+void game::GameMenu::setColorTextMenu(Color menColor, Color ChoColor, Color BordColor)
+{
+	menu_text_color = menColor;
+	chose_text_color = ChoColor;
+	border_color = BordColor;
+
+	for (int i = 0; i < max_menu; i++)
+	{
+		mainMenu[i].setFillColor(menu_text_color);
+		mainMenu[i].setOutlineColor(border_color);
+	}
+
+	mainMenu[mainMenuSelected].setFillColor(chose_text_color);
+}
+
+
+ЭТОТ КОД ДЛЯ main.cpp
+#include "GameMenu.h"
+#include <SFML/Graphics.hpp>
+#include <iostream>
+using namespace sf;
+using namespace std;
+
+
+// функция настройки текста
+void InitText(Text& mtext, float xpos, float ypos, String str, int size_font = 60,
+    Color menu_text_color = Color::White, int bord = 0, Color border_color = Color::Black);
+
+//игровой процесс
+void GameStart()
+{
+    
+}
+
+
+
+int main()
+{
+    // Создание окна
+    RenderWindow window;
+    window.create(VideoMode::getDesktopMode(), L"Clicker", Style::Fullscreen);
+
+    //отключаем видимость курсора
+    window.setMouseCursorVisible(false);
+
+    //размер экрана
+    float width = VideoMode::getDesktopMode().width;
+    float height = VideoMode::getDesktopMode().height;
+
+    //устанавливаем фон экрана меню
+    RectangleShape background(Vector2f(width, height));
+
+    Texture texture_window;
+    if (!texture_window.loadFromFile("D:/Image/пещера.png")) return 4;
+    background.setTexture(&texture_window);
+
+    //шрифт для названия экрана
+    Font font;
+    if (!font.loadFromFile("D:/Clicker/Project1 SFML/Project1/arial.ttf")) return 5;
+    //текст с названием экрана
+    Text Titul;
+    Titul.setFont(font);
+    InitText(Titul, 480, 50, L"Monster Slayer Clicker", 150, Color(237, 147, 0), 3);
+
+    //массив пунктов меню
+    String name_menu[4]{ L"Играть", L"Выход"};
+
+    //объект меню
+    game::GameMenu mymenu(window, 950, 350, name_menu, 100, 120);
+
+    //установка цвета отображения меню
+    mymenu.setColorTextMenu(Color(237, 147, 0), Color::Red, Color::Black);
+    mymenu.AlignMenu(2);
+
+
+    // Основной цикл программы
+    while (window.isOpen())
+    {
+        // Обработка событий
+        Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == Event::KeyReleased)
+            {
+                //события выбора пунктов меню
+                if (event.key.code == Keyboard::Up) { mymenu.MoveUp(); }     //ввех
+                if (event.key.code == Keyboard::Down) { mymenu.MoveDown(); } //вниз
+                if (event.key.code == Keyboard::Return)                      //ввод
+                {
+                    //переходим на выбранный пункт меню
+                    switch (mymenu.getSelectedMenuNumber())
+                    {
+                    case 0:GameStart();    break;
+                    case 1:window.close(); break;
+                    }
+                }
+            }
+        }
+
+
+
+        // Очистка экрана
+        window.clear();
+
+        window.draw(background);
+        
+        window.draw(Titul);
+        mymenu.draw();
+        
+        
+        // Отображение изменений на экране
+        window.display();
+    }
+
+    return 0;
+}
+
+//функция настройки текста
+void InitText(Text& mtext, float xpos, float ypos, String str, int size_font,
+    Color menu_text_color, int bord, Color border_color)
+{
+    mtext.setCharacterSize(size_font);
+    mtext.setPosition(xpos, ypos);
+    mtext.setString(str);
+    mtext.setFillColor(menu_text_color);
+    mtext.getOutlineThickness(bord);
+    mtext.setOutlineColor(border_color);
+}
