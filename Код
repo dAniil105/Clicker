@@ -19,18 +19,47 @@ int main()
     if (!texture.loadFromFile("C:/Users/asdaq/OneDrive/Изображения/Saved Pictures/пещера.png")) {
         return 2; // В случае ошибки загрузки фона
     }
+    Sprite background(texture);  // Создание спрайта с фоном
 
-    // Создание спрайта с фоном
-    Sprite background(texture);
+    Texture mob1Texture;
+    if (!mob1Texture.loadFromFile("C:/Users/asdaq/Downloads/whitemonstr.png")) {
+        return 3; // В случае ошибки загрузки кнопки
+    }
+    Sprite button(mob1Texture);  //Создание спрайта моба
+    button.setPosition(530 - button.getGlobalBounds().width / 2, 350 - button.getGlobalBounds().height / 2);
+    button.setScale(0.5f, 0.5f); // Уменьшение размера кнопки вдвое по горизонтали и вертикали
 
+    Texture increasedmg;
+    if (!increasedmg.loadFromFile("C:/Users/asdaq/Downloads/bigup.png")) {
+        return 4; // В случае ошибки загрузки кнопки
+    }
+    Sprite butincdmg(increasedmg);  //Создание спрайта моба
+    butincdmg.setPosition(397 - butincdmg.getGlobalBounds().width / 2, 400 - butincdmg.getGlobalBounds().height / 2);
+    butincdmg.setScale(0.2f, 0.2f);
+
+    // Инициализация счетчика
+    int score = 0;
     Text scoreText;
     scoreText.setFont(font);
     scoreText.setCharacterSize(24);
     scoreText.setFillColor(Color::White);
     scoreText.setPosition(10, 10);
 
-    // Инициализация счетчика
-    int score = 0;
+    //Инициализация полоски здоровья
+    int hp = 10;
+    Text hpText;
+    hpText.setFont(font);
+    hpText.setCharacterSize(24);
+    hpText.setFillColor(Color::White);
+    hpText.setPosition(400, 95);
+
+    //Инициализация урона
+    int dmg = 1;
+    Text dmgText;
+    dmgText.setFont(font);
+    dmgText.setCharacterSize(24);
+    dmgText.setFillColor(Color::White);
+    dmgText.setPosition(100, 300);
 
     // Основной цикл программы
     while (window.isOpen())
@@ -39,22 +68,33 @@ int main()
         Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == Event::Closed)
-                window.close();
-
             // Обработка события клика мыши
             if (event.type == Event::MouseButtonPressed)
             {
                 if (event.mouseButton.button == Mouse::Left)
                 {
-                    // Увеличение счетчика при клике
-                    score++;
+                    // Проверка, был ли клик внутри кнопки
+                    if (button.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    {
+                        // Увеличение счетчика при клике на кнопку
+                        score++;
+                        hp-= dmg;
+                    }
+                    if (butincdmg.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    {
+                        // Увеличение переменной dmg на 1 при клике на кнопку
+                        dmg++;
+                    }
                 }
             }
         }
 
         // Обновление текста счета
         scoreText.setString("Score: " + to_string(score));
+        //Обновление полоски здоровья
+        hpText.setString("HP: " + to_string(hp));
+        //Обновление урона
+        dmgText.setString("DMG: " + to_string(dmg));
 
         // Очистка экрана
         window.clear();
@@ -62,8 +102,14 @@ int main()
         // Отрисовка фона
         window.draw(background);
 
+        //Отрисовка моба
+        window.draw(button);
+        window.draw(butincdmg);
+
         // Отрисовка текста
         window.draw(scoreText);
+        window.draw(hpText);
+        window.draw(dmgText);
 
         // Отображение изменений на экране
         window.display();
