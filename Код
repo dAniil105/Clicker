@@ -7,7 +7,7 @@ int main()
 {
     // Создание окна
     RenderWindow window(VideoMode(1280, 720), "Clicker Game");
-    
+
     // Создание текста для отображения счета
     Font font;
     if (!font.loadFromFile("JollyLodger.ttf")) {
@@ -77,12 +77,31 @@ int main()
     upgbut.setFillColor(Color::White);
     upgbut.setPosition(305, 515);
 
-    //
+    //Инициация надписи на кнопке
     Text mulbut;
     mulbut.setFont(font);
     mulbut.setCharacterSize(40);
     mulbut.setFillColor(Color::White);
     mulbut.setPosition(305, 300);
+
+    // Создание черного прямоугольника, который покрывает весь экран
+    RectangleShape blackout(Vector2f(window.getSize().x, window.getSize().y));
+    blackout.setFillColor(Color::Black);
+
+    // Установка начальной прозрачности черного экрана
+    float alpha = 255; // Начальная прозрачность 
+    blackout.setFillColor(Color(0, 0, 0, static_cast<Uint8>(alpha))); 
+    Clock clock;
+    Time elapsed = clock.getElapsedTime();
+    if (elapsed.asSeconds() <= 1) 
+    {
+        alpha = alpha - 255 / (5 * 0.1); // Уменьшаем альфа-канал
+        if (alpha < 0)
+        {
+            alpha = 0; // Проверка на отрицательные значения
+        }
+        blackout.setFillColor(Color(0, 0, 0, static_cast<Uint8>(alpha))); // Установка новой прозрачности
+    }
 
     // Основной цикл программы
     while (window.isOpen())
@@ -160,8 +179,11 @@ int main()
         window.draw(dmgText);
         window.draw(upgbut);
         window.draw(mulbut);
+        window.draw(blackout);
 
         // Отображение изменений на экране
         window.display();
+
+    
     }
 }
