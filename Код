@@ -6,60 +6,83 @@ using namespace sf;
 int main()
 {
     // Создание окна
-    RenderWindow window(VideoMode(600, 400), "Clicker Game");
-
+    RenderWindow window(VideoMode(1280, 720), "Clicker Game");
+    
     // Создание текста для отображения счета
     Font font;
-    if (!font.loadFromFile("arial.ttf")) {
+    if (!font.loadFromFile("JollyLodger.ttf")) {
         cerr << "Unable to load font file!" << endl;
         return 1;
     }
 
     Texture texture;
-    if (!texture.loadFromFile("C:/Users/asdaq/OneDrive/Изображения/Saved Pictures/пещера.png")) {
+    if (!texture.loadFromFile("C:/Users/asdaq/OneDrive/Изображения/Saved Pictures/пещера (1).png")) {
         return 2; // В случае ошибки загрузки фона
     }
     Sprite background(texture);  // Создание спрайта с фоном
+    background.setScale(0.52f, 0.48f);
 
     Texture mob1Texture;
     if (!mob1Texture.loadFromFile("C:/Users/asdaq/Downloads/whitemonstr.png")) {
         return 3; // В случае ошибки загрузки кнопки
     }
     Sprite button(mob1Texture);  //Создание спрайта моба
-    button.setPosition(530 - button.getGlobalBounds().width / 2, 350 - button.getGlobalBounds().height / 2);
-    button.setScale(0.5f, 0.5f); // Уменьшение размера кнопки вдвое по горизонтали и вертикали
+    button.setPosition(1000 - button.getGlobalBounds().width / 2, 440 - button.getGlobalBounds().height / 2);
 
     Texture increasedmg;
     if (!increasedmg.loadFromFile("C:/Users/asdaq/Downloads/bigup.png")) {
         return 4; // В случае ошибки загрузки кнопки
     }
-    Sprite butincdmg(increasedmg);  //Создание спрайта моба
-    butincdmg.setPosition(397 - butincdmg.getGlobalBounds().width / 2, 400 - butincdmg.getGlobalBounds().height / 2);
-    butincdmg.setScale(0.2f, 0.2f);
+    Sprite butincdmg(increasedmg); 
+    butincdmg.setPosition(590 - butincdmg.getGlobalBounds().width / 2, 700 - butincdmg.getGlobalBounds().height / 2);
+    butincdmg.setScale(0.4f, 0.2f);
+
+    Texture muldmg;
+    if (!muldmg.loadFromFile("C:/Users/asdaq/Downloads/bigup.png")) {
+        return 5; // В случае ошибки загрузки кнопки
+    }
+    Sprite butmuldmg(muldmg);
+    butmuldmg.setPosition(590 - butmuldmg.getGlobalBounds().width / 2, 490 - butmuldmg.getGlobalBounds().height / 2);
+    butmuldmg.setScale(0.4f, 0.2f);
 
     // Инициализация счетчика
-    int score = 0;
+    unsigned int score = 0;
     Text scoreText;
     scoreText.setFont(font);
-    scoreText.setCharacterSize(24);
-    scoreText.setFillColor(Color::White);
+    scoreText.setCharacterSize(55);
+    scoreText.setFillColor(Color::Yellow);
     scoreText.setPosition(10, 10);
 
     //Инициализация полоски здоровья
-    int hp = 10;
+    int hp = 500;
     Text hpText;
     hpText.setFont(font);
-    hpText.setCharacterSize(24);
-    hpText.setFillColor(Color::White);
-    hpText.setPosition(400, 95);
+    hpText.setCharacterSize(46);
+    hpText.setFillColor(Color::Red);
+    hpText.setPosition(940, 140);
 
     //Инициализация урона
     int dmg = 1;
     Text dmgText;
     dmgText.setFont(font);
-    dmgText.setCharacterSize(24);
-    dmgText.setFillColor(Color::White);
-    dmgText.setPosition(100, 300);
+    dmgText.setCharacterSize(42);
+    dmgText.setFillColor(Color::Cyan);
+    dmgText.setPosition(350, 600);
+
+    //Инициализация надписи на кнопке
+    Text upgbut;
+    upgbut.setFont(font);
+    upgbut.setCharacterSize(40);
+    Color gray(128, 128, 128);
+    upgbut.setFillColor(Color::White);
+    upgbut.setPosition(305, 515);
+
+    //
+    Text mulbut;
+    mulbut.setFont(font);
+    mulbut.setCharacterSize(40);
+    mulbut.setFillColor(Color::White);
+    mulbut.setPosition(305, 300);
 
     // Основной цикл программы
     while (window.isOpen())
@@ -73,28 +96,51 @@ int main()
             {
                 if (event.mouseButton.button == Mouse::Left)
                 {
+                    if (hp < 1)
+                    {
+                        return 0;
+                    }
                     // Проверка, был ли клик внутри кнопки
-                    if (button.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    else if (button.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
                     {
                         // Увеличение счетчика при клике на кнопку
                         score++;
                         hp-= dmg;
                     }
-                    if (butincdmg.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    if (score < 1)
                     {
-                        // Увеличение переменной dmg на 1 при клике на кнопку
+                        break;
+                    }
+                    else if (butincdmg.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    {
+                        // Увеличение dmg на 1 при клике на кнопку
+                        score--;
                         dmg++;
+                    }
+                    if (score < 10)
+                    {
+                        break;
+                    }
+                    else if (butmuldmg.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    {
+                        // Увеличение dmg в 2 раза при клике на кнопку
+                        dmg*= 2;
+                        score -= 10;
                     }
                 }
             }
         }
 
         // Обновление текста счета
-        scoreText.setString("Score: " + to_string(score));
+        scoreText.setString("Coins: " + to_string(score));
         //Обновление полоски здоровья
         hpText.setString("HP: " + to_string(hp));
         //Обновление урона
         dmgText.setString("DMG: " + to_string(dmg));
+        //Текст кнопки увел урона
+        upgbut.setString("Up cost 1 coin");
+        //Текст кнопки множителя урона
+        mulbut.setString("Up cost 10 coin");
 
         // Очистка экрана
         window.clear();
@@ -102,18 +148,20 @@ int main()
         // Отрисовка фона
         window.draw(background);
 
-        //Отрисовка моба
+        //Отрисовка кнопок
         window.draw(button);
         window.draw(butincdmg);
+        window.draw(butmuldmg);
+
 
         // Отрисовка текста
         window.draw(scoreText);
         window.draw(hpText);
         window.draw(dmgText);
+        window.draw(upgbut);
+        window.draw(mulbut);
 
         // Отображение изменений на экране
         window.display();
     }
-
-    return 0;
 }
